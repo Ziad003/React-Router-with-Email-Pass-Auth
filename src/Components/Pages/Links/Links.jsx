@@ -1,19 +1,35 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../../FirebaseInit/FirebaseInit";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const Links = () => {
   const [getUser, setGetUser] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showPass, setShowPass] = useState(false);
+
+  const handleShowPass = (e) => {
+    e.preventDefault();
+    setShowPass(!showPass);
+  };
+
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const terms = e.target.terms.checked;
+
     setGetUser(false);
     setErrorMsg("");
+
+    if (!terms) {
+      setErrorMsg("Acceprt our terms first");
+      return;
+    }
     if (!emailRegex.test(email)) {
       setErrorMsg(
         "Please enter a valid email address (e.g., example@gmail.com).",
@@ -60,12 +76,30 @@ const Links = () => {
                 name="email"
               />
               <label className="label">Password</label>
-              <input
-                type="password"
-                className="input"
-                placeholder="Password"
-                name="password"
-              />
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  className="input"
+                  placeholder="Password"
+                  name="password"
+                />
+                <button
+                  className="absolute top-3 right-7 cursor-pointer"
+                  onClick={handleShowPass}
+                >
+                  {showPass ? (
+                    <FaRegEye></FaRegEye>
+                  ) : (
+                    <FaRegEyeSlash></FaRegEyeSlash>
+                  )}
+                </button>
+              </div>
+              <div className="mt-2">
+                <label className="label">
+                  <input type="checkbox" className="checkbox" name="terms" />
+                  Accept Our Terms and Conditions
+                </label>
+              </div>
               {getUser ? (
                 <p className="text-green-400">Sign up successful</p>
               ) : (
