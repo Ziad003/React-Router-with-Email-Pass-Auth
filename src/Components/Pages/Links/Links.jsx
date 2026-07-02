@@ -1,7 +1,13 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+//Signup
+
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../../FirebaseInit/FirebaseInit";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { Link } from "react-router";
 
 const Links = () => {
   const [getUser, setGetUser] = useState(false);
@@ -47,6 +53,10 @@ const Links = () => {
         const user = result.user;
         console.log(user);
         setGetUser(true);
+        e.target.reset();
+        sendEmailVerification(auth.currentUser).then(() => {
+          alert("Please logIn to your email and verify first");
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -107,9 +117,17 @@ const Links = () => {
               )}
               {errorMsg ? <p className="text-red-400">{errorMsg}</p> : ""}
               <button className="btn btn-neutral mt-4" type="submit">
-                Login
+                SignUp
               </button>
             </form>
+            <p>
+              Already have an account?{" "}
+              <Link to={"/logIn"}>
+                <span className="cursor-pointer text-blue-400 underline">
+                  LogIn
+                </span>
+              </Link>
+            </p>
           </div>
         </div>
       </div>
